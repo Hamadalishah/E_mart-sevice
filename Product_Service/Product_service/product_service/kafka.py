@@ -1,7 +1,8 @@
 from aiokafka import AIOKafkaProducer,AIOKafkaConsumer  # type: ignore
+import logging
 
-
-
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 async def kafka_consumer(topic,bootstrap_servers):
@@ -15,8 +16,8 @@ async def kafka_consumer(topic,bootstrap_servers):
     finally:
         await consumer.stop()
         
-        
-        
+
+
 async def kafka_producer():
     producer = AIOKafkaProducer(bootstrap_servers='broker:19092')
     await producer.start()
@@ -24,3 +25,9 @@ async def kafka_producer():
         yield producer
     finally:
         await producer.stop()
+        logger.info("Kafka producer stopped")
+
+# Serialization function for Kafka messages
+def serialize_product_data(product_data):
+    return product_data.SerializeToString()
+

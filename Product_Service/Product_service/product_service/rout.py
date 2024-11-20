@@ -46,7 +46,7 @@ async def product_update(id:int,product:Annotated[ProductAdd,Depends()],session:
 
 @router.delete('/delete/product/{id}')
 async def product_delete(id:int,session:Annotated[Session,Depends(get_session)]):
-    products= await delete_product(id=id,session=session)
+    products= await delete_product(product_id=id,session=session)
     return {
         f"product with id {id} deleted succesfully"
     }

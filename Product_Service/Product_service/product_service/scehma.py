@@ -20,7 +20,7 @@ class ProductImage(SQLModel, table=True):  # type: ignore
  
 # Request and response schemas
 class ProductAdd(BaseModel):
-    id:int 
+    product_id:int
     product_name: str
     product_price: int
     product_quantity: int

@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+message Inventory {
+  int32 inventory_id = 1;          // Inventory ID
+  int32 product_id = 2;            // ID of the associated product
+  string product = 3;              // Product name
+  int32 stock_quantity = 4;        // Total available quantity in inventory
+  string location = 5;             // Location in warehouse or store
+  string last_restocked = 6;       // Date of last restock
+}
+
+message InventoryUpdate {
+  int32 product_id = 1;            // ID of the product being updated
+  int32 stock_quantity = 2;        // Updated stock quantity
+}

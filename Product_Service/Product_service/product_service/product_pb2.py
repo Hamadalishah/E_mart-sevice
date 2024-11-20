@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rproduct.proto\"k\n\x08Products\x12\x14\n\x0cproduct_name\x18\x01 \x01(\t\x12\x15\n\rproduct_price\x18\x02 \x01(\x05\x12\x18\n\x10product_quantity\x18\x03 \x01(\x05\x12\x18\n\x10product_category\x18\x04 \x01(\t\"J\n\rProductImages\x12\x11\n\timage_url\x18\x01 \x01(\t\x12\x12\n\nimage_name\x18\x02 \x01(\t\x12\x12\n\nproduct_id\x18\x03 \x01(\x05\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\rproduct.proto\"w\n\x08Products\x12\n\n\x02id\x18\x01 \x01(\x05\x12\x14\n\x0cproduct_name\x18\x02 \x01(\t\x12\x15\n\rproduct_price\x18\x03 \x01(\x05\x12\x18\n\x10product_quantity\x18\x04 \x01(\x05\x12\x18\n\x10product_category\x18\x05 \x01(\t\"J\n\rProductImages\x12\x11\n\timage_url\x18\x01 \x01(\t\x12\x12\n\nimage_name\x18\x02 \x01(\t\x12\x12\n\nproduct_id\x18\x03 \x01(\x05\x62\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'product_pb2', globals())
@@ -21,7 +21,7 @@ if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
   _PRODUCTS._serialized_start=17
-  _PRODUCTS._serialized_end=124
-  _PRODUCTIMAGES._serialized_start=126
-  _PRODUCTIMAGES._serialized_end=200
+  _PRODUCTS._serialized_end=136
+  _PRODUCTIMAGES._serialized_start=138
+  _PRODUCTIMAGES._serialized_end=212
 # @@protoc_insertion_point(module_scope)

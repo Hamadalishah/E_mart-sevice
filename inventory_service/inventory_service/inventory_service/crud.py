@@ -1,5 +1,9 @@
 from sqlmodel import Session, select
 from .schema import Inventory, InventoryAdd, InventoryUpdate
+from .kafka import kafka_producer,serialize_inventory_data # Import Kafka producer and serializer
+import logging
+
+logger = logging.getLogger(__name__)
 
 # Get all inventory items
 async def get_all_inventory(session: Session):
@@ -17,6 +21,13 @@ async def add_inventory(session: Session, inventory_data: InventoryAdd):
     session.add(new_inventory)
     session.commit()
     session.refresh(new_inventory)
+    
+    # Serialize the data and send to Kafka
+    serialized = serialize_inventory_data(new_inventory)
+    async with kafka_producer() as producer:
+        await producer.send('inventory_update_topic', serialized)
+        logger.info(f"Inventory added to Kafka topic for product ID: {new_inventory.product_id}")
+
     return new_inventory
 
 # Update an existing inventory item
@@ -27,6 +38,13 @@ async def update_inventory(session: Session, inventory_id: int, inventory_data: 
             setattr(inventory, key, value)
         session.commit()
         session.refresh(inventory)
+
+        # Serialize the data and send to Kafka
+        serialized = serialize_inventory_data(inventory)
+        async with kafka_producer() as producer:
+            await producer.send('inventory_update_topic', serialized)
+            logger.info(f"Inventory updated in Kafka topic for product ID: {inventory.product_id}")
+
     return inventory
 
 # Delete an inventory item
@@ -35,4 +53,9 @@ async def delete_inventory(session: Session, inventory_id: int):
     if inventory:
         session.delete(inventory)
         session.commit()
+        serialized = serialize_inventory_data(inventory)
+        async with kafka_producer() as producer:
+            await producer.send('inventory_delete_topic', serialized)
+            logger.info(f"Inventory deletion sent to Kafka topic for product ID: {inventory.product_id}")
+
     return inventory
