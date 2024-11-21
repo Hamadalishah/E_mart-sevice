@@ -18,16 +18,13 @@ async def kafka_consumer(topic,bootstrap_servers):
         
 
 
-async def kafka_producer():
-    producer = AIOKafkaProducer(bootstrap_servers='broker:19092')
+
+
+async def kafka_producer(topic: str, message):
+    producer = AIOKafkaProducer(bootstrap_servers='localhost:19092')  # Replace with your broker address
     await producer.start()
     try:
-        yield producer
+        await producer.send_and_wait(topic, message.SerializeToString())
+        print(f"Message sent to {topic}: {message}")
     finally:
         await producer.stop()
-        logger.info("Kafka producer stopped")
-
-# Serialization function for Kafka messages
-def serialize_product_data(product_data):
-    return product_data.SerializeToString()
-
