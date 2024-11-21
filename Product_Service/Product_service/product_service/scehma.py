@@ -7,7 +7,7 @@ class Product(SQLModel, table=True):  # type: ignore
     product_id: Optional[int] = Field(default=None, primary_key=True)  # type: ignore
     product_name: str  # type: ignore
     product_price: int  # type: ignore
-    product_quantity: int  # type: ignore
+    product_sku: str  # type: ignore
     product_category: str  # type: ignore
     images: List["ProductImage"] = Relationship(back_populates="product")  # type: ignore
     last_modified: Optional[str]
