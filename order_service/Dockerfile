@@ -15,5 +15,5 @@ COPY . /code/
 RUN poetry config virtualenvs.create false
 RUN poetry install
 EXPOSE 8004
-CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--reload", "--log-level", "debug"]
+CMD ["poetry", "run", "uvicorn", "order_service.main:app", "--host", "0.0.0.0", "--reload", "--log-level", "debug"]
 

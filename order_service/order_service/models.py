@@ -3,6 +3,7 @@ from typing import Optional
 from sqlalchemy import Column, String
 from sqlalchemy.dialects.postgresql import JSON
 from pydantic import BaseModel
+import uuid
 # Define Order model using SQLModel
 class Order(SQLModel, table=True):
     id: int = Field(default=None, primary_key=True)

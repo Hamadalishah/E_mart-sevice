@@ -48,7 +48,7 @@ services:
     ports:
       - "8004:8000"
     volumes:
-      - ./order_service/app:/app
+      - ./order_service:/code
     depends_on:
       - postgres_db
       - broker

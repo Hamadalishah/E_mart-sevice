@@ -8,7 +8,7 @@ import asyncio
 
 router = APIRouter()
 
-producer = AIOKafkaProducer(bootstrap_servers='localhost:19092')  # Replace with your broker address
+producer = AIOKafkaProducer(bootstrap_servers='broker:19092')  # Replace with your broker address
 
 @router.on_event("startup")
 async def startup_event():
