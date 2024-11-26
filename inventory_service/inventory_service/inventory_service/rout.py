@@ -1,18 +1,24 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
-from typing import List
+from typing import List,Annotated
 from .schema import Inventory, InventoryAdd, InventoryUpdate
 from .crud import (
     get_all_inventory)
-from .kafka import get_async_session
+from .db import get_session
+# from .kafka import get_async_session
 from sqlalchemy.ext.asyncio import AsyncSession 
 router = APIRouter()
 
 
 @router.get("/inventory", response_model=List[Inventory])
-async def read_inventory(session: AsyncSession  = Depends(get_async_session)): 
-    inventory_data =  await get_all_inventory(session=session)
-    return inventory_data
+async def get_inventories(session:Annotated[Session,Depends(get_session)]):
+    result = await get_all_inventory(session)
+    return result
+
+
+# async def read_inventory(session: AsyncSession  = Depends(get_async_session)): 
+#     inventory_data =  await get_all_inventory(session=session)
+#     return inventory_data
 
 
 # @router.get("/inventory/{inventory_id}", response_model=Inventory)

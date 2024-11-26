@@ -8,8 +8,8 @@ class Inventory(SQLModel, table=True):  # type: ignore
     product_id: int  # Product ID to reference product information received through Kafka  # Foreign key to link with Product table
     product_name: str  # Name of the product for quick reference
     product_category: str  # Category of the product for categorization
-    stock_quantity: int  # Total available quantity in inventory
-    location: str  # Location in warehouse or store
+    stock_quantity: int = Field(default=0) # Total available quantity in inventory
+    location: str = "out of location"  # Location in warehouse or store
     status: str = "in-stock"  # Status to indicate availability (e.g., "in-stock", "out-of-stock")
     last_modified: Optional[str] = None
     

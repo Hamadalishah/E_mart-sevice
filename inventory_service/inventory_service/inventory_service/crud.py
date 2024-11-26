@@ -5,34 +5,39 @@ from typing import Annotated
 from fastapi import Depends
 from .db import get_session
 import logging
- 
+
 from sqlmodel import Session ,select
 
-logger = logging.getLogger(__name__)
+# logger = logging.getLogger(__name__)
 
-# Get all inventory items
-
-async def get_all_inventory(session: AsyncSession):
+# # Get all inventory items
+async def get_all_inventory(session:Annotated[Session,Depends(get_session)]):
     statement = select(Inventory)
-    results = await session.execute(statement)
-    return results.scalars().all()
-# Get inventory item by ID
-async def get_inventory_by_id(session: Session, inventory_id: int):
-    return session.get(Inventory, inventory_id)
+    result = session.exec(statement).all()
+    return result
+    
 
-# Function to add inventory to the database
-async def add_inventory(session:Annotated[Session, Depends(get_session)], inventory_data: dict):
-    new_inventory = Inventory(**inventory_data)  # Create Inventory instance with product data and defaults
-    try:
-        session.add(new_inventory)
-        session.commit()
-        session.refresh(new_inventory)
-        logger.info(f"Inventory for product ID: {new_inventory.product_id} added successfully.")
-    except Exception as e:
-        session.rollback()
-        logger.error(f"Failed to add inventory for product ID: {inventory_data['product_id']}. Error: {e}")
+# async def get_all_inventory(session: AsyncSession):
+#     statement = select(Inventory)
+#     results = await session.execute(statement)
+#     return results.scalars().all()
+# # Get inventory item by ID
+# async def get_inventory_by_id(session: Session, inventory_id: int):
+#     return session.get(Inventory, inventory_id)
 
-# Run the consumer
+# # Function to add inventory to the database
+# async def add_inventory(session:Annotated[Session, Depends(get_session)], inventory_data: dict):
+#     new_inventory = Inventory(**inventory_data)  # Create Inventory instance with product data and defaults
+#     try:
+#         session.add(new_inventory)
+#         session.commit()
+#         session.refresh(new_inventory)
+#         logger.info(f"Inventory for product ID: {new_inventory.product_id} added successfully.")
+#     except Exception as e:
+#         session.rollback()
+#         logger.error(f"Failed to add inventory for product ID: {inventory_data['product_id']}. Error: {e}")
+
+# # Run the consumer
 # asyncio.run(consume_product_updates())
 
 
