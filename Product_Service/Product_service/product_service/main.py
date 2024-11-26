@@ -52,7 +52,7 @@ async def lifespan(app: FastAPI):
     print("table creating....")
     create_table()
     print("creating table succesfully")
-    task = asyncio.create_task(kafka_consumer('product_topic','broker:19092'))
+    task = asyncio.create_task(kafka_consumer('product_create_topic','broker:19092'))
     # task2 = asyncio.create_task(kafka_consumer("product_image",'broker:19092'))
     yield    
 app = FastAPI(lifespan=lifespan,

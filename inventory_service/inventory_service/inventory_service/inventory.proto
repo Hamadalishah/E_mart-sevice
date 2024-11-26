@@ -9,7 +9,18 @@ message Inventory {
   string last_restocked = 6;       // Date of last restock
 }
 
+
 message InventoryUpdate {
   int32 product_id = 1;            // ID of the product being updated
   int32 stock_quantity = 2;        // Updated stock quantity
+}
+
+
+message Products {
+   int32 product_id = 1;           // Product ID
+   string product_name = 2;        // Product name
+   int32 product_price = 3;        // Product price
+   string product_sku = 4;         // SKU code
+   string product_category = 5;    // Product category
+   string last_modified = 6;       // Last modified timestamp
 }

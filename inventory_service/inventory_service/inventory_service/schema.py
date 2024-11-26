@@ -11,8 +11,25 @@ class Inventory(SQLModel, table=True):  # type: ignore
     stock_quantity: int  # Total available quantity in inventory
     location: str  # Location in warehouse or store
     status: str = "in-stock"  # Status to indicate availability (e.g., "in-stock", "out-of-stock")
-    last_modified: Optional[str]
+    last_modified: Optional[str] = None
     
+
+
+
+
+class InventoryBase(BaseModel):
+    """Base model for Inventory"""
+    product_id: int
+    product_name: str
+    product_category: str
+    stock_quantity: int = 0  # Default value
+    location: str = "default-location"  # Default value
+    status: str = "in-stock"  # Default value
+    last_modified: str  # Default value or Optional[str] as well if you prefer
+
+    class Config:
+        extra = "ignore"  # Ignore extra fields from Kafka message
+
 
 class InventoryUpdate(BaseModel):
     stock_quantity: int

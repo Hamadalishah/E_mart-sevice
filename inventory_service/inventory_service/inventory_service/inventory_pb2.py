@@ -13,7 +13,7 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0finventory.proto\"\x88\x01\n\tInventory\x12\x14\n\x0cinventory_id\x18\x01 \x01(\x05\x12\x12\n\nproduct_id\x18\x02 \x01(\x05\x12\x0f\n\x07product\x18\x03 \x01(\t\x12\x16\n\x0estock_quantity\x18\x04 \x01(\x05\x12\x10\n\x08location\x18\x05 \x01(\t\x12\x16\n\x0elast_restocked\x18\x06 \x01(\t\"=\n\x0fInventoryUpdate\x12\x12\n\nproduct_id\x18\x01 \x01(\x05\x12\x16\n\x0estock_quantity\x18\x02 \x01(\x05\x62\x06proto3')
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x0finventory.proto\"\x88\x01\n\tInventory\x12\x14\n\x0cinventory_id\x18\x01 \x01(\x05\x12\x12\n\nproduct_id\x18\x02 \x01(\x05\x12\x0f\n\x07product\x18\x03 \x01(\t\x12\x16\n\x0estock_quantity\x18\x04 \x01(\x05\x12\x10\n\x08location\x18\x05 \x01(\t\x12\x16\n\x0elast_restocked\x18\x06 \x01(\t\"=\n\x0fInventoryUpdate\x12\x12\n\nproduct_id\x18\x01 \x01(\x05\x12\x16\n\x0estock_quantity\x18\x02 \x01(\x05\"\x91\x01\n\x08Products\x12\x12\n\nproduct_id\x18\x01 \x01(\x05\x12\x14\n\x0cproduct_name\x18\x02 \x01(\t\x12\x15\n\rproduct_price\x18\x03 \x01(\x05\x12\x13\n\x0bproduct_sku\x18\x04 \x01(\t\x12\x18\n\x10product_category\x18\x05 \x01(\t\x12\x15\n\rlast_modified\x18\x06 \x01(\tb\x06proto3')
 
 _builder.BuildMessageAndEnumDescriptors(DESCRIPTOR, globals())
 _builder.BuildTopDescriptorsAndMessages(DESCRIPTOR, 'inventory_pb2', globals())
@@ -24,4 +24,6 @@ if _descriptor._USE_C_DESCRIPTORS == False:
   _INVENTORY._serialized_end=156
   _INVENTORYUPDATE._serialized_start=158
   _INVENTORYUPDATE._serialized_end=219
+  _PRODUCTS._serialized_start=222
+  _PRODUCTS._serialized_end=367
 # @@protoc_insertion_point(module_scope)

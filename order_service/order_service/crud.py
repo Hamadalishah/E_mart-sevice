@@ -1,11 +1,10 @@
 from sqlmodel import Session, select
 from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException
-from .models import Order,OrderCreate,OrderUpdate
-import asyncio
-from .kafka_producer import kafka_producer
-from aiokafka import AIOKafkaProducer
-import logging
+from .models import Order,OrderCreate,OrderUpdate # type: ignore
+from .kafka_producer import kafka_producer # type: ignore
+from aiokafka import AIOKafkaProducer # type: ignore
+
 
 async def create_order_crud(order_data: OrderCreate, db: Session, producer: AIOKafkaProducer):
     new_order = Order(user_id=order_data.user_id, product_id=order_data.product_id, quantity=order_data.quantity)

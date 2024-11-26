@@ -5,7 +5,7 @@ from sqlalchemy.dialects.postgresql import JSON
 from pydantic import BaseModel
 import uuid
 # Define Order model using SQLModel
-class Order(SQLModel, table=True):
+class Order(SQLModel, table=True): # type :ignore
     id: int = Field(default=None, primary_key=True)
     order_uuid: str = Field(default_factory=lambda: str(uuid.uuid4()), index=True)
     user_id: int

@@ -1,15 +1,16 @@
 import asyncio
-from aiokafka import AIOKafkaProducer
+from aiokafka import AIOKafkaProducer # type: ignore
 
 # Kafka producer function
-async def kafka_producer(topic: str, message):
-    producer = AIOKafkaProducer(bootstrap_servers='broker:19092')  # Replace with your broker address
+async def kafka_producer():
+    producer = AIOKafkaProducer(bootstrap_servers='broker:19092')
     await producer.start()
     try:
-        await producer.send_and_wait(topic, message.encode('utf-8'))
-        logger.info(f"Message sent to {topic}: {message}")
+        yield producer
     finally:
         await producer.stop()
+        # logger.info("Kafka producer stopped")
+
 
 
 

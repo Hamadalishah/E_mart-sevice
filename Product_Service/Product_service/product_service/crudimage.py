@@ -6,11 +6,11 @@ from .db import get_session
 from sqlalchemy.exc import SQLAlchemyError
 from .product_pb2 import ProductImages  # type: ignore
 from aiokafka import AIOKafkaProducer # type: ignore
-from .kafka import kafka_producer
+from .kafka import get_kafka_producer
 
 
 async def add_product_image(id:int, data:UpdateProductImage,session:Annotated[Session,Depends(get_session)],
-                           producer:Annotated[AIOKafkaProducer,Depends(kafka_producer)] ):
+                           producer:Annotated[AIOKafkaProducer,Depends(get_kafka_producer)] ):
     
     try:
         product = session.exec(select(Product).where(Product.product_id == id)).one()

@@ -258,6 +258,17 @@ test = ["certifi", "cryptography-vectors (==43.0.3)", "pretend", "pytest (>=6.2.
 test-randomorder = ["pytest-randomly"]
 
 [[package]]
+name = "dependencies"
+version = "7.7.0"
+description = "Constructor injection designed with OOP in mind."
+optional = false
+python-versions = "*"
+files = [
+    {file = "dependencies-7.7.0-py2.py3-none-any.whl", hash = "sha256:6a842068931258efc88b1faa7f08829b7e58271f4a097e2d06e766917909ad4f"},
+    {file = "dependencies-7.7.0.tar.gz", hash = "sha256:ae662ffe5726582705d26ae86977d0d616922100c38a211f0c27c765554fb026"},
+]
+
+[[package]]
 name = "dnspython"
 version = "2.7.0"
 description = "DNS toolkit"
@@ -1559,4 +1570,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.12"
-content-hash = "2a22a225e1ff0cb96f6202a211c58c3ed4306e3f3b5160ca61af42be5226a59b"
+content-hash = "c412e8cb4a5ef102aff4f378776a2a86400b2b81c41784140b1f28a840360854"

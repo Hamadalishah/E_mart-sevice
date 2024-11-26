@@ -6,19 +6,19 @@ from .db import get_session
 from sqlalchemy.exc import SQLAlchemyError
 from .product_pb2 import Products  # type: ignore
 from aiokafka import AIOKafkaProducer,AIOKafkaConsumer  # type: ignore
-from .kafka import kafka_producer
+from .kafka import get_kafka_producer
 import logging
 
 logger = logging.getLogger(__name__)
 
 async def add_product(data: Annotated[Products, Depends()],
                       session: Annotated[Session, Depends(get_session)],
-                      producer: AIOKafkaProducer):
+                      producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)] ):
     # Use Product model for the database
     product_db = Product(
         product_name=data.product_name,
         product_price=data.product_price,
-        product_quantity=data.product_quantity,
+        product_sku=data.product_sku,
         product_category=data.product_category
     )
 
@@ -41,10 +41,11 @@ async def add_product(data: Annotated[Products, Depends()],
         product_id=product_db.product_id,  # Notice we're using `product_id` from the SQLAlchemy model
         product_name=product_db.product_name,
         product_price=product_db.product_price,
-        product_quantity=product_db.product_quantity,
+        product_sku=product_db.product_sku,
         product_category=product_db.product_category
     )
-    await kafka_producer('product_create_topic', product_data)
+    serialized_product = product_data.SerializeToString()
+    await producer.send('product_create_topic', serialized_product,key=str(product_db.product_id).encode('utf-8'))
 
 
 
@@ -84,71 +85,83 @@ async def get_product_by_id(id:int,session:Session):
     return {
         "Product" : product
     }
+    
+# async def update_product(
+#     id: int,
+#     data: ProductAdd,
+#     session: Session,
+#     producer: AIOKafkaProducer
+# ):
+#     try:
+#         # Fetch and update product in the database
+#         product = session.exec(select(Product).where(Product.product_id == id)).first()
+#         if not product:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
+#         # Update only fields that are provided in the request
+#         updated_fields = {}
+#         if data.product_name is not None:
+#             product.product_name = data.product_name
+#             updated_fields['product_name'] = data.product_name
+#         if data.product_price is not None:
+#             product.product_price = data.product_price
+#             updated_fields['product_price'] = data.product_price
+#         if data.product_quantity is not None:
+#             product.product_quantity = data.product_quantity
+#             updated_fields['product_quantity'] = data.product_quantity
+#         if data.product_category is not None:
+#             product.product_category = data.product_category
+#             updated_fields['product_category'] = data.product_category
 
-async def update_product(data: Annotated[Products , Depends()],
-                         session: Annotated[Session, Depends(get_session)],
-                         producer: AIOKafkaProducer):
-    try:
-        # Fetch and update product in the database
-        product = session.exec(select(Product).where(Product.product_id == data.product_id)).first()
-        if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+#         # Commit changes to the database
+#         session.commit()
+#         session.refresh(product)
+#         logger.info(f"Product {product.product_name} updated successfully.")
 
-        # Update only fields that are provided in the request
-        updated_fields = {}
-        if data.product_name:
-            product.product_name = data.product_name
-            updated_fields['product_name'] = data.product_name
-        if data.product_price:
-            product.product_price = data.product_price
-            updated_fields['product_price'] = data.product_price
-        if data.product_quantity:
-            product.product_quantity = data.product_quantity
-            updated_fields['product_quantity'] = data.product_quantity
-        if data.product_category:
-            product.product_category = data.product_category
-            updated_fields['product_category'] = data.product_category
+#     except SQLAlchemyError as e:
+#         session.rollback()
+#         logger.error(f"Error updating product: {e}")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"updating product error: {e}"
+#         )
 
-        session.commit()
-        session.refresh(product)
-        logger.info(f"Product {product.product_name} updated successfully.")
-    except SQLAlchemyError as e:
-        session.rollback()
-        logger.error(f"Error updating product: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"updating product error: {e}"
-        )
+#     # Serialize the updated fields as a Protobuf message and send to Kafka
+#     product_data = Products(
+#         product_id=product.product_id,
+#         product_name=product.product_name,
+#         product_price=product.product_price,
+#         product_quantity=product.product_quantity,
+#         product_category=product.product_category
+#     )
 
-    # Serialize the updated fields as a Protobuf message and send to Kafka
-    product_data = Products(
-        product_id=product.product_id,
-        **updated_fields
-    )
-    await kafka_producer('product_update_topic', product_data)
+#     serialized_data = product_data.SerializeToString()
+#     await producer.send_and_wait('product_update_topic', serialized_data)
 
-async def delete_product(product_id: int, session: Annotated[Session, Depends(get_session)], producer: AIOKafkaProducer):
-    try:
-        # Fetch and delete product from the database
-        product = session.exec(select(Product).where(Product.product_id == product_id)).first()
-        if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+#     return product
 
-        session.delete(product)
-        session.commit()
-        logger.info(f"Product {product.product_name} deleted successfully.")
-    except SQLAlchemyError as e:
-        session.rollback()
-        logger.error(f"Error deleting product: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"deleting product error: {e}"
-        )
+# async def delete_product(product_id: int, session: Annotated[Session, Depends(get_session)], producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
+#     try:
+#         # Fetch and delete product from the database
+#         product = session.exec(select(Product).where(Product.product_id == product_id)).first()
+#         if not product:
+#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
-    # Create and serialize a Protobuf message for deletion and send to Kafka
-    product_message = Products(
-        product_id=product_id
-    )
-    await kafka_producer('product_delete_topic', product_message)
+#         session.delete(product)
+#         session.commit()
+#         logger.info(f"Product {product.product_name} deleted successfully.")
+#     except SQLAlchemyError as e:
+#         session.rollback()
+#         logger.error(f"Error deleting product: {e}")
+#         raise HTTPException(
+#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+#             detail=f"deleting product error: {e}"
+#         )
+
+#     # Create and serialize a Protobuf message for deletion and send to Kafka
+#     product_message = Products(
+#         product_id=product_id
+#     )
+#     serialized_data = product_message.SerializeToString()
+#     await producer('product_delete_topic', serialized_data)
 

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session
-from .crud import create_order_crud, get_order_crud, update_order_status_crud, delete_order_crud
-from .db import get_session
-from aiokafka import AIOKafkaProducer
-from .models import OrderCreate, OrderUpdate
+from .crud import create_order_crud, get_order_crud, update_order_status_crud, delete_order_crud # type: ignore
+from .db import get_session # type: ignore
+from aiokafka import AIOKafkaProducer # type: ignore
+from .models import OrderCreate, OrderUpdate # type: ignore
 import asyncio
 
 router = APIRouter()
