@@ -1,7 +1,7 @@
 from fastapi import APIRouter,Depends,HTTPException,Form
 from .db import get_session
 from .scehma import ProductAdd,Product
-from .crud import add_product,get_products,get_product_by_id
+from .crud import add_product,get_products,get_product_by_id,delete_product
 from typing import Annotated
 from sqlmodel import Session
 from aiokafka import AIOKafkaProducer # type: ignore
@@ -45,9 +45,11 @@ async def product_get_by_id(id:int,session:Annotated[Session,Depends(get_session
 #     products= await update_product(id=id,data=product,session=session,producer=producer)
 #     return products
 
-# @router.delete('/delete/product/{id}')
-# async def product_delete(id:int,session:Annotated[Session,Depends(get_session)]):
-#     products= await delete_product(product_id=id,session=session)
-#     return {
-#         f"product with id {id} deleted succesfully"
-#     }
+@router.delete('/delete/product/{id}')
+async def product_delete(id:int,session:Annotated[Session,Depends(get_session)],
+                         producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
+    products= await delete_product(product_id=id,session=session,producer=producer)
+    return {
+        f"product with id {id} deleted succesfully"
+    }
+

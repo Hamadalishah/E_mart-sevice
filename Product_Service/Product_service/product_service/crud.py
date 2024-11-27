@@ -140,28 +140,28 @@ async def get_product_by_id(id:int,session:Session):
 
 #     return product
 
-# async def delete_product(product_id: int, session: Annotated[Session, Depends(get_session)], producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
-#     try:
-#         # Fetch and delete product from the database
-#         product = session.exec(select(Product).where(Product.product_id == product_id)).first()
-#         if not product:
-#             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
+async def delete_product(product_id: int, session: Annotated[Session, Depends(get_session)], producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
+    try:
+        # Fetch and delete product from the database
+        product = session.exec(select(Product).where(Product.product_id == product_id)).first()
+        if not product:
+            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
 
-#         session.delete(product)
-#         session.commit()
-#         logger.info(f"Product {product.product_name} deleted successfully.")
-#     except SQLAlchemyError as e:
-#         session.rollback()
-#         logger.error(f"Error deleting product: {e}")
-#         raise HTTPException(
-#             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-#             detail=f"deleting product error: {e}"
-#         )
+        session.delete(product)
+        session.commit()
+        logger.info(f"Product {product.product_name} deleted successfully.")
+    except SQLAlchemyError as e:
+        session.rollback()
+        logger.error(f"Error deleting product: {e}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"deleting product error: {e}"
+        )
 
-#     # Create and serialize a Protobuf message for deletion and send to Kafka
-#     product_message = Products(
-#         product_id=product_id
-#     )
-#     serialized_data = product_message.SerializeToString()
-#     await producer('product_delete_topic', serialized_data)
+    # Create and serialize a Protobuf message for deletion and send to Kafka
+    product_message = Products(
+        product_id=product_id
+    )
+    serialized_data = product_message.SerializeToString()
+    await producer('product_delete_topic', serialized_data)
 
