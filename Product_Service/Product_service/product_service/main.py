@@ -4,6 +4,7 @@ from .db import create_table
 from .image_routes import router2
 from .rout import router
 from .kafka import kafka_consumer
+from .kafka_consumer import kafka_consumer_delete_product
 from fastapi.routing import APIRoute
 import asyncio
 # from typing import Annotated
@@ -53,6 +54,7 @@ async def lifespan(app: FastAPI):
     create_table()
     print("creating table succesfully")
     task = asyncio.create_task(kafka_consumer('product_create_topic','broker:19092'))
+    task1 = asyncio.create_task(kafka_consumer_delete_product('product_delete_topic','broker:19092'))
     # task2 = asyncio.create_task(kafka_consumer("product_image",'broker:19092'))
     yield    
 app = FastAPI(lifespan=lifespan,

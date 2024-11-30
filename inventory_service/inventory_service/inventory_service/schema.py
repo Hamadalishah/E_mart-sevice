@@ -10,7 +10,7 @@ class Inventory(SQLModel, table=True):  # type: ignore
     product_category: str  # Category of the product for categorization
     stock_quantity: int = Field(default=0) # Total available quantity in inventory
     location: str = "out of location"  # Location in warehouse or store
-    status: str = "in-stock"  # Status to indicate availability (e.g., "in-stock", "out-of-stock")
+    status: str = "out-of-stock" # Status to indicate availability (e.g., "in-stock", "out-of-stock")
     last_modified: Optional[str] = None
     
 
@@ -44,5 +44,8 @@ class InventoryAdd(BaseModel):
     stock_quantity: int  # Total available quantity in inventory
     location: str  # Location in warehouse or store
     last_restocked: Optional[str]
-    
+
+class ProductDeleteMessage(BaseModel):
+    product_id: int
+
 

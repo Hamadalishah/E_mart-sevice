@@ -2,10 +2,11 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlmodel import Session
 from typing import List,Annotated
 from .schema import Inventory, InventoryAdd, InventoryUpdate
+from aiokafka import AIOKafkaProducer # type: ignore
 from .crud import (
-    get_all_inventory)
+    get_all_inventory ,update_inventory)
 from .db import get_session
-# from .kafka import get_async_session
+from .kafka import get_kafka_producer
 from sqlalchemy.ext.asyncio import AsyncSession 
 router = APIRouter()
 
@@ -30,16 +31,19 @@ async def get_inventories(session:Annotated[Session,Depends(get_session)]):
 
 
 # @router.post("/inventory", response_model=Inventory)
-# async def create_inventory(inventory_data: InventoryAdd, session: Session = Depends(get_session)):
-#     return await add_inventory_api(session, inventory_data)
+# async def create_inventory(Inventory_id:int,inventory_data: InventoryAdd, session:Annotated[Session,Depends(get_session)],
+#                         producer: Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
+# ):
+#     updated_inventory = await add_inventory_api(invento)
+#     return updated_inventory
 
-
-# @router.put("/inventory/{inventory_id}", response_model=Inventory)
-# async def update_inventory_item(inventory_id: int, inventory_data: InventoryUpdate, session: Session = Depends(get_session)):
-#     inventory = await update_inventory(session, inventory_id, inventory_data)
-#     if not inventory:
-#         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inventory item not found")
-#     return inventory
+@router.put("/inventory/{inventory_id}", response_model=Inventory)
+async def update_inventory_item(inventory_id: int, inventory_data: InventoryUpdate, session:Annotated[Session,Depends(get_session)],
+                                producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
+    inventory = await update_inventory(session, inventory_id,inventory_data,producer=producer)
+    if not inventory:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Inventory item not found")
+    return inventory
 
 
 # @router.delete("/inventory/{inventory_id}")

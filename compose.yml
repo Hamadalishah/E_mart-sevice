@@ -54,6 +54,19 @@ services:
       - broker
     networks:
       - my_network
+  payment_service:
+    build:
+      context: ./Payment_Service/payment_service
+      dockerfile: Dockerfile
+    ports:
+      - "8005:8000"
+    networks:
+      - my_network
+    volumes:
+      - ./Payment_Service/payment_service:/code
+    depends_on:
+      - postgres_db
+      - broker
 
   postgres_db:
     image: postgres:latest

@@ -1,5 +1,5 @@
 import asyncio
-from aiokafka import AIOKafkaConsumer
+from aiokafka import AIOKafkaConsumer # type:ignore
 
 async def consume_order_events():
     consumer = AIOKafkaConsumer(

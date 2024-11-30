@@ -9,7 +9,7 @@ class Product(SQLModel, table=True):  # type: ignore
     product_price: int  # type: ignore
     product_sku: str  # type: ignore
     product_category: str  # type: ignore
-    last_modified: Optional[str]
+    last_modified: str
     images: List["ProductImage"] = Relationship(back_populates="product")  # type: ignore
     
 class ProductImage(SQLModel, table=True):  # type: ignore
@@ -26,7 +26,15 @@ class ProductAdd(BaseModel):
     product_price: int
     product_sku: str 
     product_category: str
-    last_modified: Optional[str]
+    last_modified: str
+
+class ProductAddUpdate(BaseModel):
+    product_name: Optional[str] = None
+    product_price: Optional[int] = None
+    product_sku: Optional[str] = None
+    product_category: Optional[str] = None
+    last_modified: Optional[str] = None
+
     
     
 class UpdateProductImage(BaseModel):

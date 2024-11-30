@@ -40,6 +40,7 @@ async def kafka_inventory_consumer(topic,bootstrap_servers):
                         product_id=inventory_data.product_id,
                         product_name=inventory_data.product_name,
                         product_category=inventory_data.product_category,
+                        last_modified=inventory_data.last_modified,
                         # The rest of the fields will use default values from InventoryBase model
                     )
                     print(f"inventory_consumer_data {inventory_consumer_data}")
