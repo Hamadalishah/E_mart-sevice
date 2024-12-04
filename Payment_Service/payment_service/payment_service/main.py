@@ -1,16 +1,22 @@
 from fastapi import FastAPI
 from .payment_routes.rout import router
 from .database.db import create_table
+from .paymentcrud.crud import API_KEY
+from contextlib import asynccontextmanager
 
 
 
-
-app = FastAPI()
-app.on_event("startup")
-def on_startup():
+@asynccontextmanager
+async def lifespan(app: FastAPI):
     create_table()
     print("Table created successfully")
+    print(API_KEY)
+    yield
+    print("Shutting down")
     
+
+app = FastAPI(lifespan=lifespan)
+
 
 
 @app.get("/items/")

@@ -9,6 +9,7 @@ connection_string:Optional[str] = os.getenv('DATABASEURL')
 if not connection_string:
     raise ValueError("DATABASE_URL environment variable not set")
 
+print(connection_string)
 
 engine = create_engine(connection_string)
 

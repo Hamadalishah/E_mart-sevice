@@ -118,7 +118,6 @@ async def update_product(
             product.product_category = data.product_category
             updated_fields['product_category'] = data.product_category
 
-<<<<<<< HEAD
         if data.last_modified is not None and data.last_modified != product.last_modified:
             product.last_modified = data.last_modified
             updated_fields['last_modified'] = data.last_modified
@@ -173,34 +172,10 @@ async def delete_product(product_id: int, session: Annotated[Session, Depends(ge
             detail=f"deleting product error: {e}"
         )
 
-=======
-async def delete_product(product_id: int, session: Annotated[Session, Depends(get_session)], producer:Annotated[AIOKafkaProducer, Depends(get_kafka_producer)]):
-    try:
-        # Fetch and delete product from the database
-        product = session.exec(select(Product).where(Product.product_id == product_id)).first()
-        if not product:
-            raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="Product not found")
-
-        session.delete(product)
-        session.commit()
-        logger.info(f"Product {product.product_name} deleted successfully.")
-    except SQLAlchemyError as e:
-        session.rollback()
-        logger.error(f"Error deleting product: {e}")
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"deleting product error: {e}"
-        )
-
->>>>>>> f179c234aa2b3dea74070ddd303de13d06ec606a
     # Create and serialize a Protobuf message for deletion and send to Kafka
     product_message = Products(
         product_id=product_id
     )
     serialized_data = product_message.SerializeToString()
-<<<<<<< HEAD
     await producer.send('product_delete_topic', serialized_data,key=str(product_message.product_id).encode('utf-8'))
-=======
-    await producer('product_delete_topic', serialized_data)
->>>>>>> f179c234aa2b3dea74070ddd303de13d06ec606a
 
